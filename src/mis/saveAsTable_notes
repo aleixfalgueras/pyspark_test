@@ -1,0 +1,20 @@
+#################### saveAsTable ####################
+
+In the case the table already exists, behavior of this function depends on the save mode, specified by the mode function
+(default to throwing an exception).
+
+append: Append contents of this DataFrame to existing data, it will use the format and options of the existing table.
+overwrite: Overwrite existing data (the schema does not need to be the same as that of the existing table)
+error or errorifexists: Throw an exception if data already exists.
+ignore: Silently ignore this operation if data already exists.
+
+saveAsTable uses the internal DataFrame to access the SparkSession that is used to access the SessionState and in the end the SessionCatalog
+to check whether the table exists or not.
+
+! The overwrite save mode works over all the partitions even when dynamic is configured, use insertInto instead
+
+! You might get an unintuitive exception sometimes:
+"The format of the existing table x is `HiveFileFormat`. It doesn't match the specified format `ParquetFileFormat`.;"
+Possible cases:
+- use "append" mode in the first insert
+- use more than one param in the function
