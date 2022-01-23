@@ -9,7 +9,7 @@ spark = SparkSession.builder.master("local").appName("FAST TEST").getOrCreate()
 spark.sparkContext.setLogLevel("ERROR")
 utils.print_spark_config(spark)
 
-dfTest = spark.createDataFrame([(1, "value1"), (2, "value2")], ["id", "value"])
+df_test = spark.createDataFrame([(1, "value1"), (2, "value2")], ["id", "value"])
 # read from data -> spark.read.text('../data/friends.txt').show()
 
 #######################################################
@@ -30,9 +30,9 @@ schema = StructType([
     StructField("float_col", FloatType(), True)
 ])
 
-dfArticles = spark.createDataFrame(spark.sparkContext.parallelize(data), schema)
+df_articles = spark.createDataFrame(spark.sparkContext.parallelize(data), schema)
 
-dfArticles.orderBy(desc(col('float_col'))).show()
+df_articles.show()
 
 
 #######################################################

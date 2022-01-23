@@ -1,0 +1,31 @@
+### How to run the project in intellij and windows 10 environment ###
+
+- Install Python 3.10
+- Install Java 8
+- Download Spark exe: Spark 3.2.0 built for Hadoop 3.3.1
+- Move winutils/winutils.exe to the local path "C:\winutils\bin\"
+- Create this environment variables: "JAVA_HOME", "SPARK_HOME" and "HADOOP_HOME" (path to winutils).
+- Add Java (%JAVA_HOME%\bin), Spark (%SPARK_HOME%\bin) and Python (C:\python3.10) to the path.
+- Create an empty folder: "C:\tmp\hive"
+- Open cmd as Admin, move to "C:\winutils\bin\" and execute "winutils chmod 777 C:\tmp\hive"
+- Install the requirements from "requirements.txt".
+
+Example of environment variables:
+- JAVA_HOME -> C:\Java\jdk1.8.0_301
+- SPARK_HOME -> C:\spark-3.2.0-bin-hadoop3.2
+- HADOOP_HOME -> C:\winutils
+
+Source: https://www.youtube.com/watch?v=wt2wM8C2SXA
+
+### Example of local spark script: ###
+
+import findspark
+from pyspark.sql import SparkSession
+
+findspark.init()
+spark = SparkSession.builder.master("local").appName("FAST TEST").getOrCreate()
+spark.sparkContext.setLogLevel("ERROR")
+
+df_test = spark.createDataFrame([(1, "value1"), (2, "value2")], ["id", "value"])
+
+df_test.show()
