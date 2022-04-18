@@ -32,7 +32,7 @@ schema = StructType([
 
 df_articles = spark.createDataFrame(spark.sparkContext.parallelize(data), schema)
 
-df_articles.show()
+df_articles.drop('firstname').show()
 
 
 #######################################################

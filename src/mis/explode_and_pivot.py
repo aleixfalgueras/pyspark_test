@@ -37,6 +37,7 @@ data_pivot = [("Banana", 1000, "USA"), ("Carrots", 1500, "USA"), ("Beans", 1600,
               ("Banana", 2000, "Canada"), ("Carrots", 2000, "Canada"), ("Beans", 2000, "Mexico")]
 
 df = spark.createDataFrame(data_pivot, ['product', 'amount', 'country'])
+df.orderBy('product', 'country').show()
 
 df.groupby('product').pivot('country').sum('amount').show()
 
