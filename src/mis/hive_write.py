@@ -14,8 +14,8 @@ spark = SparkSession.builder.appName("Pyspark Aleix")\
     .enableHiveSupport() \
     .getOrCreate()
 
-""" If your Spark application is interacting with Hadoop, Hive, or both use spark hadoop properties in the 
-form of spark.hadoop.* in the conf 
+""" If your Spark application is interacting with Hadoop, Hive, or both, use spark hadoop properties in the 
+form of spark.hadoop.* in the config 
 ex: .config("spark.hadoop.hive.exec.dynamic.partition", "true")
 """
 
@@ -92,14 +92,13 @@ df2.write.mode("append").insertInto(target_table, overwrite=False)
 
 ### PARTITIONED WRITES ###
 
-""" last value/s must be the partition/s column/s"""
 df3.write.mode("overwrite").insertInto(target_table_partitioned, overwrite=True)
 df4.write.mode("append").insertInto(target_table_partitioned, overwrite=False)
 
 """
 partitionBy() indicates the partition data columns
 maxRecordsPerFile is particulary useful when data is skew
-use repartition/coalesce before the ".write" to determine the number of files PER partition
+use coalesce before the ".write" to determine the number of files PER partition
 source: https://sparkbyexamples.com/pyspark/pyspark-partitionby-example/
 """
 df3.union(df4)\
