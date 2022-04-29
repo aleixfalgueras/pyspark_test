@@ -1,0 +1,31 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  pyspark:
+    image: "test:latest"
+    stdin_open: true # docker run -i : Keep STDIN open even if not attached
+    tty: true        # docker run -t : Allocates a pseudo-tty
+    environment:
+      # add lib to python pat to be able to import into the testing suite
+      PYTHONPATH : "${PYTHONPATH}:/testing"
+      #TEST_CASE OVERRIDE -> "all" to run unittest test discovery | "yourtest.py" to run yourtest.py within the test folder
+      TEST_CASE : "all"
+    ports:
+      #ready to forward sparkUI and spark history servers /docker_port:/host_port
+      - "4040:5000"
+      - "18080:18081"
+    volumes:
+      #connects storage within the Docker container with storage in the host machine /host:/docker
+      - .:/testing/test
+      - ../lib:/testing/lib
+    working_dir: "/testing/test"
+    entrypoint: ["./test.sh", "${TEST_CASE}"]
+
+
+### USAGE :
+# docker-compose run --rm pyspark                              -> runs all *test.py in the test folder
+# docker-compose run --rm -e TEST_CASE=pysparktest.py pyspark  -> runs pysparktest.py
+# docker-compose run --rm -e TEST_CASE=pysparktest pyspark     -> runs pysparktest.py
+
+# you can change the TEST_CASE env variable to your specific test and just run
+# docker-compose run --rm pyspark
+
