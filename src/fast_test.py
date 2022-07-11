@@ -33,8 +33,7 @@ schema = StructType([
 df_articles = spark.createDataFrame(spark.sparkContext.parallelize(data), schema)
 
 df_articles.drop('firstname').show()
-
-
+df_articles.createOrReplaceTempView()
 #######################################################
 
 # input()

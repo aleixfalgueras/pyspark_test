@@ -103,29 +103,29 @@ Who are the second most selling and the least selling persons (sellers) for each
 Who are those for product with 'product_id = 0'
 """
 
-# RANK = 'rank'
-#
-# window_rank = Window.partitionBy(PRODUCT_ID).orderBy(desc(col(NUM_PIECES_SOLD)))
-#
-# sales_res = sales\
-#     .withColumn(RANK, dense_rank().over(window_rank)) \
-#     .dropDuplicates([PRODUCT_ID, RANK])
-#
-# sales_res.cache()
-#
-# sales_second = sales_res.filter(col(RANK) == lit(2))\
-#
-# window_last = Window.partitionBy(PRODUCT_ID)
-#
-# sales_last = sales_res\
-#     .withColumn('HIT', when(max(col(RANK)).over(window_last) == col(RANK), lit('HIT')).otherwise(lit('')))\
-#     .filter(col('HIT') == lit('HIT'))
-#
-# sales_second\
-#     .union(sales_last.drop('HIT'))\
-#     .select(ORDER_ID, PRODUCT_ID, SELLER_ID, NUM_PIECES_SOLD)\
-#     .orderBy(PRODUCT_ID)\
-#     .show()
+RANK = 'rank'
+
+window_rank = Window.partitionBy(PRODUCT_ID).orderBy(desc(col(NUM_PIECES_SOLD)))
+
+sales_res = sales\
+    .withColumn(RANK, dense_rank().over(window_rank)) \
+    .dropDuplicates([PRODUCT_ID, RANK])
+
+sales_res.cache()
+
+sales_second = sales_res.filter(col(RANK) == lit(2))\
+
+window_last = Window.partitionBy(PRODUCT_ID)
+
+sales_last = sales_res\
+    .withColumn('HIT', when(max(col(RANK)).over(window_last) == col(RANK), lit('HIT')).otherwise(lit('')))\
+    .filter(col('HIT') == lit('HIT'))
+
+sales_second\
+    .union(sales_last.drop('HIT'))\
+    .select(ORDER_ID, PRODUCT_ID, SELLER_ID, NUM_PIECES_SOLD)\
+    .orderBy(PRODUCT_ID)\
+    .show()
 
 """ EXERCICE 4
 Create a new column called "hashed_bill" defined as follows:

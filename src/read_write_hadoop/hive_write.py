@@ -84,6 +84,8 @@ stored as parquet""")
 df1.write.mode("overwrite").saveAsTable(target_table)  # column-name based resolution (best create strategy)
 df2.write.mode("overwrite").insertInto(target_table, overwrite=True)  # position-based resolution
 # result: 1 directory 1 file
+"""Names are not checked in the inserInto() method! If two columns or more are misplaced but the result schema type structure is 
+the same than the schema type structure of the definition the insert is going to be performed"""
 
 # append writes
 df1.write.mode("append").saveAsTable(target_table)
@@ -92,11 +94,12 @@ df2.write.mode("append").insertInto(target_table, overwrite=False)
 
 ### PARTITIONED WRITES ###
 
+df1.write.partitionBy(["col1", "col2"]).mode("append").saveAsTable(target_table)
 df3.write.mode("overwrite").insertInto(target_table_partitioned, overwrite=True)
 df4.write.mode("append").insertInto(target_table_partitioned, overwrite=False)
 
 """
-partitionBy() indicates the partition data columns
+partitionBy() indicates the partition data columns -> insertInto() can't be used together with partitionBy()
 maxRecordsPerFile is particulary useful when data is skew
 use coalesce before the ".write" to determine the number of files PER partition
 source: https://sparkbyexamples.com/pyspark/pyspark-partitionby-example/
@@ -108,3 +111,10 @@ df3.union(df4)\
     .mode("overwrite")\
     .saveAsTable(target_table_partitioned_at_fly)
 
+### DROPS ###
+
+# safe drop partition
+spark.sql(f"alter table {target_table_partitioned} drop if exists partition (name = 'pepito')")
+
+# drop partition with null values
+spark.sql(f"alter table {target_table_partitioned} drop partition (name = '__HIVE_DEFAULT_PARTITION__')")
